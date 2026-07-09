@@ -1,31 +1,3 @@
-# imx93-guard 主程序的 systemd 开机自启服务单元。
-#
-# 部署位置(板子上)：/etc/systemd/system/imx93-guard.service
-# 启用命令：
-#   sudo systemctl daemon-reload
-#   sudo systemctl enable imx93-guard.service
-#   sudo systemctl start imx93-guard.service
-# 查看状态/日志：
-#   systemctl status imx93-guard.service
-#   journalctl -u imx93-guard.service -f
-#
-# 说明：
-# - 以 root 运行(默认，不指定User)，才能访问串口 /dev/ttyUSB0(root:dialout)
-#   和摄像头，与之前手动启动时的权限一致。
-# - WorkingDirectory 设为 /mnt/tfcard/npu_setup，保证 pose_worker.py 里
-#   相对路径引用的模型文件(movenet_lightning_int8.tflite)能被找到。
-# - RequiresMountsFor=/mnt/tfcard：TF卡是外置挂载，必须等它挂载完成后
-#   再启动，否则找不到程序/脚本/模型。
-# - After/Wants=network-online.target：语音(DashScope)、Server酱推送、
-#   cpolar 隧道都需要网络，等网络就绪后再启动更稳。
-# - Restart=always + RestartSec=3：开机瞬间 USB 串口(CH340 的 ttyUSB0)
-#   可能还没枚举完成，程序会因打不开串口而退出；自动重启会不断重试，
-#   直到串口就绪成功连上，不需要人工干预。
-# - 日志走 journald(systemd 默认)，自动按大小轮转，不会像之前手动
-#   重定向到 imx93-guard.log 那样无限增长。用 journalctl 查看。
-# - 未加 -verbose：避免每200ms一行的轮询日志把 journald 刷爆，只保留
-#   状态变化/错误等关键日志。需要详细排查时可临时手动加 -verbose 运行。
-
 [Unit]
 Description=IMX93 Home Guard Service
 After=network-online.target
