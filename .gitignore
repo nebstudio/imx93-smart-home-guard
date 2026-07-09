@@ -1,0 +1,28 @@
+# 敏感信息（绝不提交）
+*.env
+.env
+**/voice_agent/.env
+
+# Go 编译产物
+imx93_code/imx93-guard-arm64
+imx93_code/fcprobe
+imx93_code/livecheck
+*.exe
+
+# Arduino / PlatformIO 构建产物
+arduino_code/.pio/
+
+# Flutter / Dart 构建产物
+app/build/
+app/.dart_tool/
+app/.idea/
+app/*.iml
+app/.flutter-plugins
+app/.flutter-plugins-dependencies
+
+# Python 缓存
+**/__pycache__/
+*.pyc
+
+# 系统文件
+.DS_Store
